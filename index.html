@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>臺北市即時交通訊息</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            transition-delay: 0;
+        }
+          html,body{
+            width: 100%;
+            height: 100%;
+            font-family: 'Noto Sans TC', sans-serif;
+          }
+          body{
+            background-position: center center;
+            background-size: cover;
+            background-repeat: no-repeat;
+          }
+          header{
+            padding: 2em;
+          }
+          .container{
+            max-width: 1200px;
+            margin: auto;
+          }
+          .container ul{
+            width: 90%;
+            margin: auto;
+            max-height: 75vh;
+            overflow: scroll;
+            padding: 0 20px;
+
+          }
+          .container ul li{
+            padding: 30px 2em;
+            border-radius: 20px;
+            margin: 10px auto;
+            box-shadow: 0px 1px 5px 0px #000;
+            cursor: pointer;
+            /* backdrop-filter: brightness(100%) blur(3px) contrast(100%);
+            -webkit-backdrop-filter: brightness(100%) blur(3px) contrast(100%); */
+            transition: .5s;
+            position: relative;
+          }
+          .container ul li::before{
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            backdrop-filter: brightness(100%) blur(3px) contrast(100%);
+            -webkit-backdrop-filter: brightness(100%) blur(3px) contrast(100%);
+          }
+          .title{
+            transition: .5s;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px #9999998c;
+
+          }
+          header p, .duration{
+            text-shadow: 0.5px 0.5px #666;
+          }
+          .content{
+            margin-top: 5px;
+            font-size: 20px;
+            font-weight: 600;
+            transition: 1s;
+            word-break: break-all;
+            overflow: hidden;
+            max-height: 0vh;
+          }
+
+          .container ul li:hover::before{
+              backdrop-filter: brightness(200%) blur(10px) contrast(80%);
+              -webkit-backdrop-filter: brightness(200%) blur(10px) contrast(80%);
+          }
+
+          .container ul li:hover .title{
+            font-size: 26px;
+          }
+          .container ul li:hover .content{
+            max-height: 100vh;
+          }
+
+          @media screen and (max-width:767px){
+            .duration{
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: center;
+                align-items: center;
+            }
+          }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>臺北市即時交通訊息</h1>
+        <p >每5分鐘更新一次</p>
+        <p class="update-time"></p>
+    </header>
+    <div class="container"></div>
+
+    <script>
+    'use strict';
+    // 更新時間
+    let updateTimeText = document.querySelector('.update-time')
+    // 內容區域
+    let container = document.querySelector('.container')
+    // 切換背景
+    let bgPicArr = ['./images/aerial-photo-of-trees-near-body-of-water-under-gray-clouds-lake-wanaka-lake-wanaka-wallpaper-34ac7d38b9a512057ac41fefc0312069.jpg', './images/canada-goose-with-ducklings-wallpaper-6fac2cacabcaae40ca813a6351b1b32f.jpg']
+    let random = Math.random() * 2
+    document.body.style.backgroundImage = random >= 1 ? `url(${bgPicArr[1]})` : `url(${bgPicArr[0]})`
+
+    function ajax(url) {
+        return new Promise(function (resolve, reject) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('get', url)
+            xhr.responseType = 'json'
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    resolve(this.response)
+                } else {
+                    reject(new Error(this.statusText))
+                }
+            }
+            xhr.send()
+        })
+    }
+
+
+    let url = 'https://tcgbusfs.blob.core.windows.net/dotapp/news.json'
+    ajax(url).then(value=>{
+        let { News, updateTime } = value
+        updateTimeText.innerHTML = '更新時間: '+ updateTime
+        updateMsg(News)
+    }).catch(err=>{
+        console.log(err);
+    })
+
+    function updateMsg(NewsArr){
+        let ul = document.createElement('ul')
+        NewsArr.forEach((item)=>{
+            let { chtmessage, content, starttime, endtime } = item
+            let li = document.createElement('li')
+            li.innerHTML =
+            `
+                <h3 class="title">
+                    ${chtmessage}
+                </h3>
+                <p class="duration">時間: <span class="startTime">${starttime}</span> 至 <span class="endTime">${endtime}</span></p>
+                <p class="content">
+                    ${content}
+                </p>
+            `
+            ul.appendChild(li)
+        })
+        container.appendChild(ul)
+    }
+
+    
+        
+    </script>
+</body>
+</html>

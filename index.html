@@ -13,13 +13,10 @@
             padding: 0;
             list-style: none;
             transition-delay: 0;
-        }
-          html,body{
-            width: 100%;
-            height: 100%;
             font-family: 'Noto Sans TC', sans-serif;
-          }
+        }
           body{
+            height: 100vh;
             background-position: center center;
             background-size: cover;
             background-repeat: no-repeat;
@@ -34,10 +31,15 @@
           .container ul{
             width: 90%;
             margin: auto;
-            max-height: 75vh;
-            overflow: scroll;
+            max-height: 70vh;
+            overflow-y: scroll;
             padding: 0 20px;
 
+            /* 隱藏滾動條 */
+            -ms-overflow-style: none;
+          }
+          .container ul::-webkit-scrollbar {
+              display: none;
           }
           .container ul li{
             padding: 30px 2em;
@@ -45,12 +47,20 @@
             margin: 10px auto;
             box-shadow: 0px 1px 5px 0px #000;
             cursor: pointer;
-            /* backdrop-filter: brightness(100%) blur(3px) contrast(100%);
-            -webkit-backdrop-filter: brightness(100%) blur(3px) contrast(100%); */
             transition: .5s;
             position: relative;
           }
-          .container ul li::before{
+          /* 點擊層 */
+          .container ul li .cover{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              background-color: transparent;
+          }
+          /* 模糊層 */
+          .container ul li .blur{
             content: '';
             position: absolute;
             width: 100%;
@@ -59,6 +69,7 @@
             top: 0;
             left: 0;
             z-index: -1;
+            transition: .3s;
             backdrop-filter: brightness(100%) blur(3px) contrast(100%);
             -webkit-backdrop-filter: brightness(100%) blur(3px) contrast(100%);
           }
@@ -81,16 +92,15 @@
             max-height: 0vh;
           }
 
-          .container ul li:hover::before{
-              backdrop-filter: brightness(200%) blur(10px) contrast(80%);
-              -webkit-backdrop-filter: brightness(200%) blur(10px) contrast(80%);
-          }
-
-          .container ul li:hover .title{
-            font-size: 26px;
+          .container ul li:hover .blur{
+            backdrop-filter: brightness(200%) blur(10px) contrast(80%);
+            -webkit-backdrop-filter: brightness(200%) blur(10px) contrast(80%);
           }
           .container ul li:hover .content{
             max-height: 100vh;
+          }
+          .container ul li:hover .title{
+            font-size: 26px;
           }
 
           @media screen and (max-width:767px){
@@ -105,7 +115,7 @@
 </head>
 <body>
     <header>
-        <h1>臺北市即時交通訊息</h1>
+        <h1>臺北市交通訊息</h1>
         <p >每5分鐘更新一次</p>
         <p class="update-time"></p>
     </header>
@@ -148,6 +158,19 @@
         console.log(err);
     })
 
+    // 判斷是手機還是pc
+    let userDeviceIsMobile;
+    let isIOS = navigator.userAgent.match(/iPhone|iPad|iPod/gi)
+      let isMobile = isIOS || navigator.userAgent.match(/Android|BlackBerry|Opera Mini|IEMobile/gi)
+      if (isMobile) {
+        // 移動端
+        userDeviceIsMobile = true
+
+      } else {
+        // PC端
+        userDeviceIsMobile = false
+      }
+
     function updateMsg(NewsArr){
         let ul = document.createElement('ul')
         NewsArr.forEach((item)=>{
@@ -155,6 +178,7 @@
             let li = document.createElement('li')
             li.innerHTML =
             `
+                <div class="cover"></div>
                 <h3 class="title">
                     ${chtmessage}
                 </h3>
@@ -162,11 +186,37 @@
                 <p class="content">
                     ${content}
                 </p>
+                <div class="blur"></div>
             `
             ul.appendChild(li)
+            if(userDeviceIsMobile){
+              li.addEventListener('click', (event)=>{
+                let ulChildArr = [...ul.children]
+                ulChildArr.forEach(item=>{
+                  
+                  // 重置樣式
+                  // 標題
+                  item.childNodes[3].style.fontSize = '23.4px'
+                  // 內文
+                  item.childNodes[7].style.maxHeight = '0vh'
+                  // 模糊層
+                  item.childNodes[9].style.backdropFilter = `brightness(100%) blur(3px) contrast(100%)`
+                  item.childNodes[9].style.webkitBackdrop = `brightness(100%) blur(3px) contrast(100%)`
+                })
+
+
+                
+                // 設置樣式
+                event.target.parentNode.childNodes[3].style.fontSize = '26px'
+                event.target.parentNode.childNodes[7].style.maxHeight = '100vh'
+                event.target.parentNode.childNodes[9].style.backdropFilter = `brightness(200%) blur(10px) contrast(80%)`
+                event.target.parentNode.childNodes[9].style.webkitBackdrop = `brightness(200%) blur(10px) contrast(80%)`
+              })
+            }
         })
         container.appendChild(ul)
     }
+
 
     
         

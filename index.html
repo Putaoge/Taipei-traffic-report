@@ -82,11 +82,11 @@
           header p, .duration{
             text-shadow: 0.5px 0.5px #666;
           }
-          .content{
+          .textBox{
             margin-top: 5px;
             font-size: 20px;
             font-weight: 600;
-            transition: 1s;
+            transition: .5s;
             word-break: break-all;
             overflow: hidden;
             max-height: 0vh;
@@ -95,9 +95,6 @@
           .container ul li:hover .blur{
             backdrop-filter: brightness(200%) blur(10px) contrast(80%);
             -webkit-backdrop-filter: brightness(200%) blur(10px) contrast(80%);
-          }
-          .container ul li:hover .content{
-            max-height: 150vh;
           }
           .container ul li:hover .title{
             font-size: 26px;
@@ -183,9 +180,11 @@
                     ${chtmessage}
                 </h3>
                 <p class="duration">時間: <span class="startTime">${starttime}</span> 至 <span class="endTime">${endtime}</span></p>
-                <p class="content">
+                <div class="textBox">
+                  <p class="content">
                     ${content}
-                </p>
+                  </p>
+                </div>
                 <div class="blur"></div>
             `
             ul.appendChild(li)
@@ -208,9 +207,19 @@
                 
                 // 設置樣式
                 event.target.parentNode.childNodes[3].style.fontSize = '26px'
-                event.target.parentNode.childNodes[7].style.maxHeight = '150vh'
+                console.log(event.target.parentNode.childNodes[7]);
+                // 文章內容的真實高度
+                event.target.parentNode.childNodes[7].style.maxHeight = getComputedStyle(event.target.parentNode.childNodes[7].childNodes[1]).height
                 event.target.parentNode.childNodes[9].style.backdropFilter = `brightness(200%) blur(10px) contrast(80%)`
                 event.target.parentNode.childNodes[9].style.webkitBackdrop = `brightness(200%) blur(10px) contrast(80%)`
+              })
+            } else{
+              li.addEventListener('mouseover', (event)=>{
+                // let ulChildArr = [...ul.children]
+                event.target.parentNode.childNodes[7].style.maxHeight = getComputedStyle(event.target.parentNode.childNodes[7].childNodes[1]).height
+              })
+              li.addEventListener('mouseout', (event)=>{
+                event.target.parentNode.childNodes[7].style.maxHeight = '0'
               })
             }
         })

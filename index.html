@@ -57,6 +57,7 @@
               position: absolute;
               top: 0;
               left: 0;
+              cursor: pointer;
               background-color: transparent;
           }
           /* 模糊層 */
@@ -127,7 +128,8 @@
     // 切換背景
     let bgPicArr = ['./images/aerial-photo-of-trees-near-body-of-water-under-gray-clouds-lake-wanaka-lake-wanaka-wallpaper-34ac7d38b9a512057ac41fefc0312069.jpg', './images/canada-goose-with-ducklings-wallpaper-6fac2cacabcaae40ca813a6351b1b32f.jpg']
     let random = Math.random() * 2
-    document.body.style.backgroundImage = random >= 1 ? `url(${bgPicArr[1]})` : `url(${bgPicArr[0]})`
+    let bgSrc = random >= 1 ? `url(${bgPicArr[1]})` : `url(${bgPicArr[0]})`
+    document.body.style.backgroundImage = bgSrc
 
     function ajax(url) {
         return new Promise(function (resolve, reject) {
@@ -196,7 +198,7 @@
 
             // 手機版
             if (userDeviceIsMobile) {
-            item.addEventListener('touchstart', (event) => {
+            item.addEventListener('click', (event) => {
               ul.childNodes.forEach(item => {
                 // 重置非選中li的樣式
                 // 標題

@@ -226,13 +226,13 @@
             })
           } else { 
             // 電腦版
-            item.addEventListener('mouseover', (event) => {
+            item.addEventListener('mouseenter', (event) => {
               // 獲取文章實際高度
-              let contentHeight = getComputedStyle(event.target.parentNode.childNodes[7].childNodes[1]).height
-              event.target.parentNode.childNodes[7].style.maxHeight = contentHeight
+              let contentHeight = getComputedStyle(event.target.childNodes[7].childNodes[1]).height
+              event.target.childNodes[7].style.maxHeight = contentHeight
             })
-            item.addEventListener('mouseout', (event) => {
-              event.target.parentNode.childNodes[7].style.maxHeight = '0'
+            item.addEventListener('mouseleave', (event) => {
+              event.target.childNodes[7].style.maxHeight = '0'
             })
           }
         })

@@ -222,7 +222,7 @@
               // 設置樣式
               event.target.parentNode.childNodes[3].style.fontSize = '26px'
               event.target.parentNode.childNodes[7].style.maxHeight = contentHeight
-              console.log('event.target.parentNode.childNodes[7]: ', event.target.parentNode.childNodes[7]);
+              // console.log('event.target.parentNode.childNodes[7]: ', event.target.parentNode.childNodes[7]);
     
               // event.target.parentNode.childNodes[9].style.backdropFilter = `brightness(200%) blur(10px) contrast(80%)`
               // event.target.parentNode.childNodes[9].style.webkitBackdrop = `brightness(200%) blur(10px) contrast(80%)`
@@ -233,7 +233,7 @@
               // 獲取文章實際高度
               let contentHeight = getComputedStyle(event.target.childNodes[7].childNodes[1]).height
               event.target.childNodes[7].style.maxHeight = contentHeight
-              console.log('event.target.childNodes[7]: ', event.target.childNodes[7]);
+              // console.log('event.target.childNodes[7]: ', event.target.childNodes[7]);
             })
             item.addEventListener('mouseleave', (event) => {
               event.target.childNodes[7].style.maxHeight = '0'
